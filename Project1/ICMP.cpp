@@ -75,7 +75,7 @@ public:
 	}
 	void Receive() {
 		char reipbuff[1024];
-		sockaddr_in 
+		sockaddr_in ipadd;
 		recvfrom()
 	}
 };
