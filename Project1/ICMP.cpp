@@ -55,13 +55,12 @@ private:
 	}
 public:
 	//수신받은 라우터의 ip와 핑을 출력
-	void printIpAp(struct iphdr* ipheader) {
+	std::string printIpAp(struct iphdr* ipheader) {
 		char ip[INET_ADDRSTRLEN];
 		struct in_addr srcip;
 		srcip.s_addr = ipheader->saddr;
-		
 		inet_ntop(AF_INET, &srcip.s_addr, ip, INET_ADDRSTRLEN);
-		std::cout << "IP: " << ip << "\n";
+		return ip
 	}
 	void Send(SOCKET sock, int ttl,sockaddr_in destAddr,int i) {
 		ICMPHEADER icmp;
