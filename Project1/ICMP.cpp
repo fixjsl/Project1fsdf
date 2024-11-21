@@ -74,6 +74,36 @@ public:
 		}
 	}
 	void Receive() {
+		char reipbuff[1024];
+		sockaddr_in 
 		recvfrom()
 	}
 };
+
+void INITWAS() {
+	WSADATA win;
+	if (WSAStartup(MAKEWORD(2, 2), &win) != 0) {
+		str::cerr << "Failed Init" << "\n";
+	}
+}
+bool CreateSocket() {
+	SOCKET sock =  socket(AF_INET,SOCK_RAW,IPPROTO_ICMP);
+	if (sock == INVALID_SOCKET) {
+		std::cerr << "Failed Socket create" << "\n";
+		std::cerr << "Error : " << WSAGetLastError() << "\n";
+		return false;
+	}
+	else {
+		std::cout << "Sucess create Socket" << "\n";
+		return true;
+	}
+
+	
+}
+
+
+void traceroute() {
+	
+
+
+}
