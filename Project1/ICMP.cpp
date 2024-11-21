@@ -75,6 +75,6 @@ public:
 		}
 	}
 	void Receive() {
-
+		recvfrom()
 	}
 };
