@@ -133,7 +133,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ICMP.cpp" />
-    <ClCompile Include="SocketF.cpp" />
     <ClCompile Include="Traceroute.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

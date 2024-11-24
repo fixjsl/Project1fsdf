@@ -2,7 +2,7 @@
 #include "ICMP.h"
 
 
-
+//private
 
 	//무결성검사를 위한 체크섬 생성함수
 	uint16_t ICMP::CalculateChecksum(uint16_t* buffer, int size) {
@@ -43,17 +43,12 @@
 		// 송신한 ip주소 문자열 변환
 		inet_ntop(AF_INET, &ipadd.sin_addr, ip, INET_ADDRSTRLEN);
 	}
-	void ICMP::ErrorCheck() {
-		int errcode = WSAGetLastError();
-		switch (errcode)
-		{
-		default:
-			break;
-		}
-
-		}
 	
-	void ICMP::Send(SOCKET sock, int ttl,sockaddr_in destAddr,int i) {
+
+
+	//public
+	
+	std::string ICMP::Send(SOCKET sock, int ttl,sockaddr_in destAddr) {
 		ICMPHEADER icmp;
 	
 		//패킷 생성	
@@ -62,13 +57,22 @@
 		//패킷 송신 및 오류검사
 		if (sendto(sock, (char*)&icmp, sizeof(icmp), 0, (struct sockaddr*)&destAddr, sizeof(destAddr)) == SOCKET_ERROR) {
 			std::cerr << "Failed send to Packet" << "\n";
+			if (WSAGetLastError() == EPERM) {
+				return GrantError = "관리자 권한으로 재실행 요구";
+			}
 		}
+		return NULL;
 	}
-	void ICMP::Receive(SOCKET sock, sockaddr_in destAddr) {
+	std::string ICMP::Receive(SOCKET sock, sockaddr_in destAddr) {
 		
 		int ipsize = sizeof(ipadd);
 		//수신받은 패킷의 데이터와 ip주소 저장
 		int result = recvfrom(sock,rebuff,sizeof(rebuff),0,(sockaddr*)&ipadd,&ipsize);
+		if (result == -1) {
+			RecvError = "TIME OUT ERROR";
+			return RecvError;
+		}
 		analyzePacket();
+		return NULL;
 		
 	}

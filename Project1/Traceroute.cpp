@@ -1,4 +1,5 @@
 #include "Traceroute.h"
+#include "ICMP.h"
 #include "Header.h"
 
 bool Traceroute::Init() {
