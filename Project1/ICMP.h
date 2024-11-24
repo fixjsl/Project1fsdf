@@ -22,8 +22,8 @@ private:
 	//패킷 분석 함수
 	void analyzePacket();
 public:
-	std::string Send(SOCKET sock, int ttl, sockaddr_in destAddr);
-	std::string Receive(SOCKET sock, sockaddr_in destAddr);
+	std::string Send(SOCKET sock, int ttl, std::string destAddr);
+	std::string Receive(SOCKET sock);
 	std::string getIp();
 	uint8_t getType();
 };

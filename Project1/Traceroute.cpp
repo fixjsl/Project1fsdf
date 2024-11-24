@@ -12,7 +12,7 @@ bool Traceroute::Init() {
 	SYSTEMTIME st;
 	st.wSecond = 5;
 	//家南 积己
-	SOCKET sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
+	sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
 	//家南 坷幅 汲沥
 	if (sock == INVALID_SOCKET) {
 		std::cerr << "Failed Socket create" << "\n";
@@ -26,4 +26,30 @@ bool Traceroute::Init() {
 		return true;
 	}
 }
+
+void Traceroute::traceroute(std::string destAddr, int ttl)
+{
+}
+
+int Traceroute::getPing1()
+{
+	return ping[0];
+}
+
+int Traceroute::getPing2()
+{
+	return ping[1];
+}
+
+std::string Traceroute::getIP()
+{
+	return icmpPaket.getIp();
+}
+
+int Traceroute::getPing3()
+{
+	return ping[2];
+}
+
+
 

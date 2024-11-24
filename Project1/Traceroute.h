@@ -1,14 +1,17 @@
 #pragma once
-
+#include "Header.h"
 class Traceroute
 {
 private:
-	int ping1,ping2,ping3;
-	
+	int ping[3] = {};
+	SOCKET sock;
+	ICMP icmpPaket;
 public:
 	bool Init();
-	void traceroute();
-	int getPing();
+	void traceroute(std::string destAddr,int ttl);
+	int getPing1();
+	int getPing2();
+	int getPing3();
 	std::string getIP();
 };
 

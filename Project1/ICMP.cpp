@@ -48,14 +48,16 @@
 
 	//public
 	
-	std::string ICMP::Send(SOCKET sock, int ttl,sockaddr_in destAddr) {
+	std::string ICMP::Send(SOCKET sock, int ttl,std::string destAddr) {
 		ICMPHEADER icmp;
-	
+		//문자열을 ip주소로 변환
+		sockaddr_in dest;
+		inet_pton(AF_INET, destAddr.c_str(), &dest);
 		//패킷 생성	
 		CreatePacket(icmp, ttl * 10);
 		setsockopt(sock, IPPROTO_IP, IP_TTL, (const char*)&ttl, sizeof(ttl));
 		//패킷 송신 및 오류검사
-		if (sendto(sock, (char*)&icmp, sizeof(icmp), 0, (struct sockaddr*)&destAddr, sizeof(destAddr)) == SOCKET_ERROR) {
+		if (sendto(sock, (char*)&icmp, sizeof(icmp), 0, (struct sockaddr*)&dest, sizeof(dest)) == SOCKET_ERROR) {
 			std::cerr << "Failed send to Packet" << "\n";
 			if (WSAGetLastError() == EPERM) {
 				return GrantError = "관리자 권한으로 재실행 요구";
@@ -63,7 +65,7 @@
 		}
 		return NULL;
 	}
-	std::string ICMP::Receive(SOCKET sock, sockaddr_in destAddr) {
+	std::string ICMP::Receive(SOCKET sock) {
 		
 		int ipsize = sizeof(ipadd);
 		//수신받은 패킷의 데이터와 ip주소 저장
