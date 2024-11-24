@@ -18,9 +18,21 @@
     <ClInclude Include="Header.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Traceroute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ICMP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ICMP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Traceroute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

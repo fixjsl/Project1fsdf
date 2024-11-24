@@ -128,9 +128,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Header.h" />
+    <ClInclude Include="ICMP.h" />
+    <ClInclude Include="Traceroute.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ICMP.cpp" />
+    <ClCompile Include="SocketF.cpp" />
+    <ClCompile Include="Traceroute.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
