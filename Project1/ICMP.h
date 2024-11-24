@@ -9,9 +9,9 @@ private:
 	std::string ICMPError;//패킷 데이터 에러
 	std::string GrantError;
 	std::string RecvError;//수신 함수 에러
-	char ip[INET_ADDRSTRLEN];//ip문자열
-	uint8_t type;//패킷 타입
-	uint8_t code;//패킷 코드
+	char ip[INET_ADDRSTRLEN] = "";//ip문자열
+	uint8_t type = NULL;//패킷 타입
+	uint8_t code = NULL;//패킷 코드
 
 
 
@@ -24,5 +24,7 @@ private:
 public:
 	std::string Send(SOCKET sock, int ttl, sockaddr_in destAddr);
 	std::string Receive(SOCKET sock, sockaddr_in destAddr);
+	std::string getIp();
+	uint8_t getType();
 };
 

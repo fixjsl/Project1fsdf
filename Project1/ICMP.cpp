@@ -76,3 +76,13 @@
 		return NULL;
 		
 	}
+
+	std::string ICMP::getIp()
+	{
+		return ip;
+	}
+
+	uint8_t ICMP::getType()
+	{
+		return type;
+	}
