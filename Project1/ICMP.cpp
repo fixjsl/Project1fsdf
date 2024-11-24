@@ -25,6 +25,17 @@ struct ICMPHEADER
 
 class ICMPRERV {
 private:
+	//도착지 주소 저장버퍼와 
+	char rebuff[1024]; // 수신받은 패킷 데이터 저장
+	sockaddr_in ipadd;// 송신한 라우터의 ip저장
+	char ICMPError[100];//패킷 데이터 에러
+	char RecvError[100];//수신 함수 에러
+	char ip[INET_ADDRSTRLEN];//ip문자열
+	uint8_t type;//패킷 타입
+	uint8_t code;//패킷 코드
+
+
+
 	//무결성검사를 위한 체크섬 생성함수
 	uint16_t CalculateChecksum(uint16_t* buffer, int size) {
 		uint32_t checksum = 0;
@@ -53,15 +64,27 @@ private:
 		icmp.Checksum = 0;
 		icmp.Checksum = CalculateChecksum((uint16_t*)&icmp, sizeof(icmp));
 	}
-public:
-	//수신받은 라우터의 ip와 핑을 출력
-	std::string printIpAp(struct iphdr* ipheader) {
-		char ip[INET_ADDRSTRLEN];
-		struct in_addr srcip;
-		srcip.s_addr = ipheader->saddr;
-		inet_ntop(AF_INET, &srcip.s_addr, ip, INET_ADDRSTRLEN);
-		return ip
+	//패킷 분석 함수
+	void analyzePacket() {
+		//version과 ihl분리
+		const unsigned int ihlength = (rebuff[0] & 0x0F) * 4;
+		const char* icmpheader = rebuff+ ihlength;
+
+		type = static_cast<uint8_t>(icmpheader[0]);
+		code = static_cast<uint8_t>(icmpheader[1]);
+		// 송신한 ip주소 문자열 변환
+		inet_ntop(AF_INET, &ipadd.sin_addr, ip, INET_ADDRSTRLEN);
 	}
+	void ErrorCheck() {
+		int errcode = WSAGetLastError();
+		switch (errcode)
+		{
+		default:
+			break;
+		}
+
+		}
+public:	
 	void Send(SOCKET sock, int ttl,sockaddr_in destAddr,int i) {
 		ICMPHEADER icmp;
 		//패킷무결성을 위한 시스템시간 현재 초 가져오기
@@ -73,37 +96,44 @@ public:
 			std::cerr << "Failed send to Packet" << "\n";
 		}
 	}
-	void Receive() {
-		char reipbuff[1024];
-		sockaddr_in ipadd;
-		recvfrom()
+	void Receive(SOCKET sock, sockaddr_in destAddr) {
+		
+		int ipsize = sizeof(ipadd);
+		//수신받은 패킷의 데이터와 ip주소 저장
+		int result = recvfrom(sock,rebuff,sizeof(rebuff),0,(sockaddr*)&ipadd,&ipsize);
+		analyzePacket();
+		
 	}
 };
 
 void INITWAS() {
 	WSADATA win;
 	if (WSAStartup(MAKEWORD(2, 2), &win) != 0) {
-		str::cerr << "Failed Init" << "\n";
+		std::cerr << "Failed Init" << "\n";
 	}
 }
 bool CreateSocket() {
+	SYSTEMTIME st;
+	st.wSecond = 5;
+	//소켓 생성
 	SOCKET sock =  socket(AF_INET,SOCK_RAW,IPPROTO_ICMP);
+	//소켓 오류 설정
 	if (sock == INVALID_SOCKET) {
 		std::cerr << "Failed Socket create" << "\n";
 		std::cerr << "Error : " << WSAGetLastError() << "\n";
 		return false;
 	}
 	else {
+		// 타임아웃 시간 설정
+		setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&st.wSecond, sizeof(st.wSecond));
 		std::cout << "Sucess create Socket" << "\n";
 		return true;
 	}
-
-	
 }
 
 
-void traceroute() {
-	
+void Traceroute() {
+	int ping[3];
 
 
 }

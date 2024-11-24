@@ -12,6 +12,7 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
+#include <time.h>
 #pragma comment(lib, "ws2_32.lib")
 
 
@@ -23,5 +24,6 @@
 #include <arpa/inet.h>
 #include <netinet/ip.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 #endif
