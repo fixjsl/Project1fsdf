@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <chrono> 
 #include <thread>
+#include <future>
+#include <vector>
 
 //IPHEADER 구조체 정의
 struct iphdr {

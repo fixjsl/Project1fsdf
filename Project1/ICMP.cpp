@@ -63,19 +63,23 @@
 				return GrantError = "관리자 권한으로 재실행 요구";
 			}
 		}
-		return NULL;
+		return "";
 	}
 	std::string ICMP::Receive(SOCKET sock) {
 		
 		int ipsize = sizeof(ipadd);
 		//수신받은 패킷의 데이터와 ip주소 저장
+
+		while (true) {
 		int result = recvfrom(sock,rebuff,sizeof(rebuff),0,(sockaddr*)&ipadd,&ipsize);
 		if (result == -1) {
 			RecvError = "TIME OUT ERROR";
 			return RecvError;
 		}
+			
+		}
 		analyzePacket();
-		return NULL;
+		return "";
 		
 	}
 
