@@ -1,5 +1,6 @@
 #pragma once
 #include "Header.h"
+#include "ICMP.h"
 class Traceroute
 {
 private:

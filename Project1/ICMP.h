@@ -20,8 +20,11 @@ private:
 	// 패킷과 현재 패킷 생성 번호를 받아 패킷을 초기화 하고 리턴
 	void CreatePacket(ICMPHEADER& icmp, uint16_t crseq);
 	//패킷 분석 함수
-	void analyzePacket();
+	
+	//String to ip
+	sockaddr_in Stadd(std::string destAddr);
 public:
+	
 	std::string Send(SOCKET sock, int ttl, std::string destAddr);
 	std::string Receive(SOCKET sock);
 	std::string getIp();

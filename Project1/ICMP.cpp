@@ -2,6 +2,7 @@
 #include "ICMP.h"
 
 
+
 //private
 
 	//무결성검사를 위한 체크섬 생성함수
@@ -10,7 +11,7 @@
 		while (size > 1)
 		{
 			checksum += *buffer++;
-			size -= -2;
+			size -= 2;
 		}
 		if (size == 1) {
 			checksum += *(uint8_t*)buffer;
@@ -33,35 +34,57 @@
 		icmp.Checksum = CalculateChecksum((uint16_t*)&icmp, sizeof(icmp));
 	}
 	//패킷 분석 함수
-	void ICMP::analyzePacket() {
-		//version과 ihl분리
-		const unsigned int ihlength = (rebuff[0] & 0x0F) * 4;
-		const char* icmpheader = rebuff+ ihlength;
+	sockaddr_in ICMP::Stadd(std::string destAddr)
+	{
+		sockaddr_in destip;
+		
+		memset(&destip, 0, sizeof(destip));
+		
+		destip.sin_family = AF_INET;
+		if (inet_pton(AF_INET, destAddr.c_str(), &destip.sin_addr) != 1) {
+			const char* domain = destAddr.c_str();
+			struct addrinfo hint, *result;
+			sockaddr_in* Domaindestip;
+			memset(&Domaindestip, 0, sizeof(Domaindestip));
+			memset(&hint, 0, sizeof(hint));
+			hint.ai_family = AF_INET;
+			hint.ai_socktype = SOCK_RAW;
+			Domaindestip->sin_family = AF_INET;
 
-		type = static_cast<uint8_t>(icmpheader[0]);
-		code = static_cast<uint8_t>(icmpheader[1]);
-		// 송신한 ip주소 문자열 변환
-		inet_ntop(AF_INET, &ipadd.sin_addr, ip, INET_ADDRSTRLEN);
+			int red = getaddrinfo(destAddr.c_str(), NULL, &hint, &result);
+			if (red != 0) {
+				ICMPError = "invalid domain";
+			}
+			Domaindestip = (sockaddr_in*)result->ai_addr;
+			return *Domaindestip;
+		}
+		return destip;
 	}
-	
+	//문자열 ip변환 함수
 
 
 	//public
 	
+	//송신함수
 	std::string ICMP::Send(SOCKET sock, int ttl,std::string destAddr) {
+		
+
 		ICMPHEADER icmp;
 		//문자열을 ip주소로 변환
-		sockaddr_in dest;
-		inet_pton(AF_INET, destAddr.c_str(), &dest);
+		sockaddr_in destip = Stadd(destAddr);
+		
 		//패킷 생성	
 		CreatePacket(icmp, ttl * 10);
 		setsockopt(sock, IPPROTO_IP, IP_TTL, (const char*)&ttl, sizeof(ttl));
 		//패킷 송신 및 오류검사
-		if (sendto(sock, (char*)&icmp, sizeof(icmp), 0, (struct sockaddr*)&dest, sizeof(dest)) == SOCKET_ERROR) {
+		if (sendto(sock, (char*)&icmp, sizeof(icmp), 0, (struct sockaddr*)&destip, sizeof(sockaddr_in)) == SOCKET_ERROR) {
 			std::cerr << "Failed send to Packet" << "\n";
 			if (WSAGetLastError() == EPERM) {
 				return GrantError = "관리자 권한으로 재실행 요구";
 			}
+		}
+		else {
+			std::cout << "Send Success" << std::endl;
 		}
 		return "";
 	}
@@ -70,15 +93,20 @@
 		int ipsize = sizeof(ipadd);
 		//수신받은 패킷의 데이터와 ip주소 저장
 
-		while (true) {
+		
 		int result = recvfrom(sock,rebuff,sizeof(rebuff),0,(sockaddr*)&ipadd,&ipsize);
 		if (result == -1) {
 			RecvError = "TIME OUT ERROR";
 			return RecvError;
 		}
-			
+		else {
+			std::cout << "Recv Success" << std::endl;
+			inet_ntop(AF_INET, &ipadd.sin_addr, ip, INET_ADDRSTRLEN);
+			std::cout << "ip = " << ip << std::endl;
 		}
-		analyzePacket();
+			
+		
+		
 		return "";
 		
 	}
@@ -92,3 +120,4 @@
 	{
 		return type;
 	}
+	
