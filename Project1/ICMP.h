@@ -29,5 +29,6 @@ public:
 	std::string Receive(SOCKET sock);
 	std::string getIp();
 	uint8_t getType();
+	int getPing();
 };
 

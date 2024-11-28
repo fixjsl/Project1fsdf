@@ -32,7 +32,6 @@ bool Traceroute::Init() {
 void Traceroute::traceroute(std::string destAddr, int ttl)
 {	//에러메시지 배열 초기화
 	ErrorMessage.clear();
-	// 문자열을 ip구조체로 변환
 	icmpPaket.Send(sock, 30, destAddr);
 	
 	//핑 시작시간 저장
@@ -41,13 +40,13 @@ void Traceroute::traceroute(std::string destAddr, int ttl)
 	
 	//권한 오류 확인
 	
-	
+	//수신모듈
 	std::string result = icmpPaket.Receive(sock);
 		
 		
 		
 		
-		return;
+	
 	
 }
 
