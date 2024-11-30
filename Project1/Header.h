@@ -34,6 +34,7 @@ struct ICMPHEADER
 #if defined(_WIN32) || defined(_WIN64)
 
 #include <winsock2.h>
+#include <Windows.h>
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
 #include <time.h>
