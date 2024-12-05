@@ -5,6 +5,7 @@ class Traceroute
 {
 private:
 	std::vector<int> ping; // ping 보관
+	std::vector<std::chrono::time_point< std::chrono::high_resolution_clock>> stping; //st ping 보관
 	SOCKET sock; // 소켓
 	ICMP icmpPaket; // 패킷
 	std::vector<std::string> ErrorMessage;// 에러메세지

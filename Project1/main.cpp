@@ -18,7 +18,7 @@ int main() {
 	
 	Traceroute tr;
 	tr.Init();
-	sockaddr_in destip = tr.Stadd("example.com");
+	sockaddr_in destip = tr.Stadd("www.amazon.com");
 	if ((int)&destip.sin_addr == 0) std::cout << "Error:: invailed url" << std::endl;
 	for (int i = 1; i <= 30; i++)
 	{

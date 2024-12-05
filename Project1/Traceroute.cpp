@@ -52,47 +52,64 @@ sockaddr_in Traceroute::Stadd(std::string destAddr)
 }
 
 bool Traceroute::traceroute(sockaddr_in destAddr, int ttl)
-{	//에러메시지 배열 초기화
+{
+	int i, j = 0;
+	std::chrono::time_point< std::chrono::high_resolution_clock> start;
+	//에러메시지 배열 초기화
 	ErrorMessage.clear();
+	//ping 배열 초기화
+	ping.clear();
+	stping.clear();
 	//소켓 ttl설정
 	if (setsockopt(sock, IPPROTO_IP, IP_TTL, (const char*)&ttl, sizeof(ttl)) < 0) {
 		std::cout << "Failed set ttl : " << WSAGetLastError() << std::endl;
 	}
-	else std::cout << "Success set ttl" << std::endl;
-	
-	
-	
-	//핑 시작시간 저장
-	
+	else std::cout << "Success set ttl : " << ttl << std::endl;
+
 	// 패킷 3개보내기
-	for (int i = 0; i < 3; i++) {
-	icmpPaket.Send(sock, ttl+i, destAddr);
-	//송신 시작시간
-	DWORD start = timeGetTime();
+	for (i = 0; i < 3; i++) {
+		icmpPaket.Send(sock, ttl, destAddr);
+		//송신 시작시간
+		stping.push_back(std::chrono::high_resolution_clock::now());
+	}
 	//수신모듈
-	std::string Rresult = icmpPaket.Receive(sock);
-	//타임아웃 확인
-	if (Rresult != "") {
-		ErrorMessage.push_back("Access Failed");
-		ping.push_back(0);
+	while (true) {
+
+		std::string Rresult = icmpPaket.Receive(sock);
+
+		//타임아웃 확인
+		if (Rresult != "") {
+			if (j >= 3) {
+				std::cout << "\nrecived end" << std::endl;
+				break;
+			}
+			ErrorMessage.push_back("Access Failed");
+			ping.push_back(0);
+		}
+		else {
+			auto end = std::chrono::high_resolution_clock::now();
+			auto dur = std::chrono::duration_cast<std::chrono::milliseconds>(end - stping[j]);
+			int durms = static_cast<int>(dur.count());
+			ping.push_back(durms);
+		}
+		//ping ip출력
+		if (ping[j] == 0) {
+			std::cout << "pint : *\t";
+		}
+		else std::cout << "ping : " << ping[j] << "\t";
+
+
+		j++;
 	}
-	else {
-		DWORD end = timeGetTime();
-		DWORD dur = end - start;
-		ping.push_back(dur);
-	}
+	std::string ip = getIP();
+	std::cout << "ip : " << ip << std::endl;
+	std::cout << "\n";
 	// 도착지 확인
 	if ((int)icmpPaket.getType() == 0) {
 		return true;
 	}
 	else return false;
-	}
-	
-		
-		
-		
-		
-	
+
 	
 }
 
